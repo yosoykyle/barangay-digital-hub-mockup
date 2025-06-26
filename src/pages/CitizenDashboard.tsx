@@ -1,9 +1,8 @@
-
 import DashboardLayout from "@/components/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { FileText, Calendar, Users, Bell, Clock, CheckCircle, AlertCircle } from "lucide-react";
+import { FileText, Calendar, Users, Bell, Clock, CheckCircle, AlertCircle, Settings, HelpCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const CitizenDashboard = () => {
@@ -15,21 +14,48 @@ const CitizenDashboard = () => {
       description: "Barangay Certificate, Clearance, etc.",
       icon: FileText,
       path: "/citizen/request-document",
-      color: "bg-blue-600"
+      color: "bg-blue-600",
+      stats: "4 active requests"
     },
     {
       title: "Book Service",
       description: "Schedule appointments",
       icon: Calendar,
       path: "/citizen/schedule-service",
-      color: "bg-green-600"
+      color: "bg-green-600",
+      stats: "Next: July 5"
     },
     {
       title: "Contact Directory",
       description: "Find officials and services",
       icon: Users,
       path: "/citizen/contact-directory",
-      color: "bg-purple-600"
+      color: "bg-purple-600",
+      stats: "50+ contacts"
+    },
+    {
+      title: "File Complaint",
+      description: "Report issues or concerns",
+      icon: AlertCircle,
+      path: "/citizen/file-complaint",
+      color: "bg-orange-600",
+      stats: "Quick response"
+    },
+    {
+      title: "Help & Support",
+      description: "Get assistance and guides",
+      icon: HelpCircle,
+      path: "/citizen/help-support",
+      color: "bg-indigo-600",
+      stats: "24/7 support"
+    },
+    {
+      title: "Settings",
+      description: "Manage your account",
+      icon: Settings,
+      path: "/citizen/settings",
+      color: "bg-gray-600",
+      stats: "Profile & preferences"
     }
   ];
 
@@ -187,34 +213,45 @@ const CitizenDashboard = () => {
           </Card>
         </div>
 
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {quickActions.map((action) => {
-            const Icon = action.icon;
-            return (
-              <Card key={action.title} className="hover:shadow-lg transition-shadow cursor-pointer">
-                <CardContent className="p-6">
-                  <div className="flex items-center space-x-4">
-                    <div className={`p-3 rounded-lg ${action.color}`}>
-                      <Icon className="h-6 w-6 text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold">{action.title}</h3>
-                      <p className="text-sm text-gray-600">{action.description}</p>
-                      <Button 
-                        className="mt-2" 
-                        size="sm"
-                        onClick={() => navigate(action.path)}
-                      >
-                        Get Started
-                      </Button>
-                    </div>
+        {/* Quick Actions - Updated to be complete */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Quick Actions</CardTitle>
+            <CardDescription>Access all your barangay services</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {quickActions.map((action) => {
+                const Icon = action.icon;
+                return (
+                  <div key={action.title} className="relative group">
+                    <Card className="hover:shadow-lg transition-all duration-200 cursor-pointer border-2 hover:border-blue-200">
+                      <CardContent className="p-6">
+                        <div className="flex items-start space-x-4">
+                          <div className={`p-3 rounded-lg ${action.color} group-hover:scale-110 transition-transform`}>
+                            <Icon className="h-6 w-6 text-white" />
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-lg">{action.title}</h3>
+                            <p className="text-sm text-gray-600 mb-2">{action.description}</p>
+                            <p className="text-xs text-gray-500 mb-3">{action.stats}</p>
+                            <Button 
+                              className="w-full" 
+                              size="sm"
+                              onClick={() => navigate(action.path)}
+                            >
+                              Get Started
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
                   </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Recent Requests */}

@@ -1,11 +1,64 @@
-
 import DashboardLayout from "@/components/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Users, FileText, Clock, AlertTriangle, TrendingUp, CheckCircle, Calendar, DollarSign } from "lucide-react";
+import { Users, FileText, Clock, AlertTriangle, TrendingUp, CheckCircle, Calendar, DollarSign, Settings, BarChart3, UserCog } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const AdminDashboard = () => {
+  const navigate = useNavigate();
+
+  const quickActions = [
+    {
+      title: "Manage Users",
+      description: "Add, edit, and manage user accounts",
+      icon: Users,
+      path: "/admin/manage-users",
+      color: "bg-blue-600",
+      stats: "2,847 users"
+    },
+    {
+      title: "View Analytics",
+      description: "Reports and system analytics",
+      icon: TrendingUp,
+      path: "/admin/analytics",
+      color: "bg-green-600",
+      stats: "Live data"
+    },
+    {
+      title: "Directory Management",
+      description: "Manage contact directory",
+      icon: UserCog,
+      path: "/admin/directory",
+      color: "bg-purple-600",
+      stats: "50+ contacts"
+    },
+    {
+      title: "Support Tickets",
+      description: "Review and respond to tickets",
+      icon: AlertTriangle,
+      path: "/admin/support-tickets",
+      color: "bg-orange-600",
+      stats: "15 pending"
+    },
+    {
+      title: "Generate Report",
+      description: "Export system reports",
+      icon: FileText,
+      path: "/admin/analytics",
+      color: "bg-indigo-600",
+      stats: "Monthly reports"
+    },
+    {
+      title: "System Settings",
+      description: "Configure system preferences",
+      icon: Settings,
+      path: "/admin/settings",
+      color: "bg-gray-600",
+      stats: "Admin access"
+    }
+  ];
+
   const kpis = [
     { title: "Active Citizens", value: "2,847", change: "+12%", icon: Users, color: "text-blue-600" },
     { title: "Pending Requests", value: "127", change: "-8%", icon: FileText, color: "text-yellow-600" },
