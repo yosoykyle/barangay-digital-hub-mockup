@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 const ForgotPassword = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("user@example.com");
@@ -13,9 +12,7 @@ const ForgotPassword = () => {
   const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 p-4">
+  return <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Forgot Password</CardTitle>
@@ -26,13 +23,10 @@ const ForgotPassword = () => {
             <Label htmlFor="email">Email Address</Label>
             <Input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} />
           </div>
-          {!otpSent && (
-            <Button className="w-full" onClick={() => setOtpSent(true)}>
+          {!otpSent && <Button onClick={() => setOtpSent(true)} className="w-full bg-blue-700 hover:bg-blue-600">
               Send OTP
-            </Button>
-          )}
-          {otpSent && (
-            <>
+            </Button>}
+          {otpSent && <>
               <div>
                 <Label htmlFor="otp">OTP</Label>
                 <Input id="otp" type="text" value={otp} onChange={e => setOtp(e.target.value)} placeholder="123456" />
@@ -47,13 +41,10 @@ const ForgotPassword = () => {
                 <Input id="confirm-password" type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="********" />
               </div>
               <Button className="w-full">Submit</Button>
-            </>
-          )}
+            </>}
           <Button variant="link" className="w-full mt-2" onClick={() => navigate("/")}>Back to Login</Button>
         </CardContent>
       </Card>
-    </div>
-  );
+    </div>;
 };
-
 export default ForgotPassword;
