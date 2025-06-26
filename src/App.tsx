@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -19,6 +18,7 @@ import DirectoryManagement from "./pages/DirectoryManagement";
 import SupportTickets from "./pages/SupportTickets";
 import AdminSettings from "./pages/AdminSettings";
 import NotFound from "./pages/NotFound";
+import ForgotPassword from "./pages/ForgotPassword";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +43,7 @@ const App = () => (
           <Route path="/admin/directory" element={<DirectoryManagement />} />
           <Route path="/admin/support-tickets" element={<SupportTickets />} />
           <Route path="/admin/settings" element={<AdminSettings />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
