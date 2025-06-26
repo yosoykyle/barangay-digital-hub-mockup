@@ -9,7 +9,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useNavigate } from "react-router-dom";
 import heroImg from "@/assets/hero-login.svg"; // Add a hero illustration (place your SVG in src/assets/)
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
-
 const Index = () => {
   const navigate = useNavigate();
   const [loginType, setLoginType] = useState("email");
@@ -18,7 +17,6 @@ const Index = () => {
   const [showOtpPrompt, setShowOtpPrompt] = useState(false);
   const [emailInput, setEmailInput] = useState("user@example.com");
   const [otpInput, setOtpInput] = useState("");
-
   const handleLogin = (userType: "citizen" | "admin") => {
     if (userType === "citizen") {
       navigate("/citizen/dashboard");
@@ -26,10 +24,11 @@ const Index = () => {
       navigate("/admin/dashboard");
     }
   };
-
-  return (
-    <div className={`min-h-screen h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-stretch justify-center p-0 md:p-12 ${highContrast ? 'contrast-125' : ''} ${largeFonts ? 'text-lg' : ''}`}
-      style={{ minHeight: '100vh', height: '100vh', overflow: 'hidden' }}>
+  return <div className={`min-h-screen h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-stretch justify-center p-0 md:p-12 ${highContrast ? 'contrast-125' : ''} ${largeFonts ? 'text-lg' : ''}`} style={{
+    minHeight: '100vh',
+    height: '100vh',
+    overflow: 'hidden'
+  }}>
       <div className="w-full max-w-7xl flex flex-col md:flex-row bg-white/90 rounded-3xl shadow-2xl overflow-hidden border border-blue-100 h-full">
         {/* Left: Illustration/Branding */}
         <div className="hidden md:flex flex-col justify-center items-center flex-1 bg-gradient-to-br from-blue-100 to-blue-200 h-full p-0">
@@ -120,14 +119,12 @@ const Index = () => {
                         Admin Login
                       </Button>
                     </div>
-                    {showOtpPrompt && (
-                      <div className="space-y-2 mt-4 border-t pt-4">
+                    {showOtpPrompt && <div className="space-y-2 mt-4 border-t pt-4">
                         <Label htmlFor="otp">Enter OTP</Label>
                         <Input id="otp" type="text" placeholder="123456" value={otpInput} onChange={e => setOtpInput(e.target.value)} />
                         <div className="text-xs text-gray-500">Sample OTP code: 123456</div>
-                        <Button className="w-full mt-2" onClick={() => handleLogin("citizen")}>Submit OTP</Button>
-                      </div>
-                    )}
+                        <Button onClick={() => handleLogin("citizen")} className="w-full mt-2 bg-blue-700 hover:bg-blue-600">Submit OTP</Button>
+                      </div>}
                   </TabsContent>
                   <TabsContent value="qr" className="space-y-4 mt-6">
                     <div className="flex flex-col items-center space-y-4">
@@ -138,14 +135,12 @@ const Index = () => {
                         Scan QR Code
                       </Button>
                     </div>
-                    {showOtpPrompt && (
-                      <div className="space-y-2 mt-4 border-t pt-4">
+                    {showOtpPrompt && <div className="space-y-2 mt-4 border-t pt-4">
                         <Label htmlFor="otp-qr">Enter OTP</Label>
                         <Input id="otp-qr" type="text" placeholder="123456" value={otpInput} onChange={e => setOtpInput(e.target.value)} />
                         <div className="text-xs text-gray-500">Sample OTP code: 123456</div>
                         <Button className="w-full mt-2" onClick={() => handleLogin("citizen")}>Submit OTP</Button>
-                      </div>
-                    )}
+                      </div>}
                   </TabsContent>
                 </Tabs>
               </CardContent>
@@ -165,8 +160,6 @@ const Index = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
