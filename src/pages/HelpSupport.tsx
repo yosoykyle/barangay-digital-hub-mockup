@@ -1,4 +1,3 @@
-
 import DashboardLayout from "@/components/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,8 +7,13 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { HelpCircle, MessageSquare, FileText, Phone, Mail, Clock, CheckCircle, AlertCircle, Search } from "lucide-react";
+import { useState } from "react";
 
 const HelpSupport = () => {
+  const [faqSearch, setFaqSearch] = useState("");
+  const [expandedFaq, setExpandedFaq] = useState<{cat: number, idx: number} | null>(null);
+  const [ticketConsent, setTicketConsent] = useState(false);
+
   const faqCategories = [
     {
       category: "Document Requests",
@@ -150,7 +154,7 @@ const HelpSupport = () => {
           <p className="text-gray-600">Get assistance, guides, and support for all barangay services</p>
         </div>
 
-        {/* Search Help */}
+        {/* Search Help (FAQs Search) */}
         <Card>
           <CardContent className="p-4">
             <div className="relative">
@@ -158,6 +162,8 @@ const HelpSupport = () => {
               <Input 
                 placeholder="Search for help topics, guides, or frequently asked questions..." 
                 className="pl-10"
+                value={faqSearch}
+                onChange={e => setFaqSearch(e.target.value)}
               />
             </div>
           </CardContent>
@@ -198,6 +204,7 @@ const HelpSupport = () => {
                       <SelectItem value="document">Document Request</SelectItem>
                       <SelectItem value="appointment">Appointment Issue</SelectItem>
                       <SelectItem value="complaint">Complaint Follow-up</SelectItem>
+                      <SelectItem value="booking">Booking Assistance</SelectItem>
                       <SelectItem value="other">Other</SelectItem>
                     </SelectContent>
                   </Select>
@@ -232,7 +239,16 @@ const HelpSupport = () => {
                 />
               </div>
 
-              <Button className="w-full">
+              {/* Upload and Consent */}
+              <div className="space-y-2">
+                <Label>Upload Screenshot/Document (optional)</Label>
+                <Input type="file" />
+              </div>
+              <div className="flex items-center space-x-2">
+                <input id="ticket-consent" type="checkbox" checked={ticketConsent} onChange={e => setTicketConsent(e.target.checked)} />
+                <Label htmlFor="ticket-consent" className="text-sm">I consent to the processing of my data for support purposes.</Label>
+              </div>
+              <Button className="w-full" disabled={!ticketConsent}>
                 Submit Support Ticket
               </Button>
             </CardContent>
@@ -265,7 +281,7 @@ const HelpSupport = () => {
           </Card>
         </div>
 
-        {/* FAQ Section */}
+        {/* FAQ Section: Expandable Accordion, Searchable */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center">
@@ -280,10 +296,20 @@ const HelpSupport = () => {
                 <div key={categoryIndex}>
                   <h3 className="text-lg font-semibold mb-4 text-blue-700">{category.category}</h3>
                   <div className="space-y-4">
-                    {category.questions.map((faq, faqIndex) => (
+                    {category.questions.filter(faq => faq.question.toLowerCase().includes(faqSearch.toLowerCase())).map((faq, faqIndex) => (
                       <div key={faqIndex} className="p-4 bg-gray-50 rounded-lg">
-                        <h4 className="font-medium mb-2">{faq.question}</h4>
-                        <p className="text-sm text-gray-600">{faq.answer}</p>
+                        <button
+                          className="w-full text-left font-medium mb-2 flex justify-between items-center"
+                          onClick={() => setExpandedFaq(expandedFaq && expandedFaq.cat === categoryIndex && expandedFaq.idx === faqIndex ? null : {cat: categoryIndex, idx: faqIndex})}
+                        >
+                          {faq.question}
+                          <span>{expandedFaq && expandedFaq.cat === categoryIndex && expandedFaq.idx === faqIndex ? "▲" : "▼"}</span>
+                        </button>
+                        {expandedFaq && expandedFaq.cat === categoryIndex && expandedFaq.idx === faqIndex && (
+                          <div>
+                            <p className="text-sm text-gray-600">{faq.answer}</p>
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -330,13 +356,14 @@ const HelpSupport = () => {
                         )}
                       </div>
                     </div>
+                    <Button size="sm" variant="outline" className="ml-2">Reply</Button>
                   </div>
                 </div>
               ))}
             </CardContent>
           </Card>
 
-          {/* Help Resources */}
+          {/* Help Resources: Downloadable PDF + Audio */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">

@@ -1,4 +1,3 @@
-
 import DashboardLayout from "@/components/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -9,6 +8,9 @@ import { useState } from "react";
 
 const DirectoryManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [showBulkUpload, setShowBulkUpload] = useState(false);
+  const [showEdit, setShowEdit] = useState<number | null>(null);
+  const [showAdd, setShowAdd] = useState(false);
 
   const directoryEntries = [
     {
@@ -105,10 +107,15 @@ const DirectoryManagement = () => {
             <h1 className="text-3xl font-bold text-gray-900">Directory Management</h1>
             <p className="text-gray-600">Manage contact directory and staff information</p>
           </div>
-          <Button className="bg-blue-600 hover:bg-blue-700">
-            <Plus className="mr-2 h-4 w-4" />
-            Add Contact
-          </Button>
+          <div className="flex gap-2">
+            <Button className="bg-blue-600 hover:bg-blue-700" onClick={() => setShowAdd(true)}>
+              <Plus className="mr-2 h-4 w-4" />
+              Add Contact
+            </Button>
+            <Button variant="outline" onClick={() => setShowBulkUpload(true)}>
+              Bulk Upload
+            </Button>
+          </div>
         </div>
 
         {/* Department Overview */}
@@ -201,13 +208,27 @@ const DirectoryManagement = () => {
                     </TableCell>
                     <TableCell>
                       <div className="flex space-x-2">
-                        <Button variant="ghost" size="sm">
+                        <Button variant="ghost" size="sm" onClick={() => setShowEdit(entry.id)}>
                           <Edit className="h-4 w-4" />
                         </Button>
                         <Button variant="ghost" size="sm" className="text-red-600">
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
+                      {showEdit === entry.id && (
+                        <div className="absolute z-50 bg-white border rounded shadow p-4 mt-2 w-80">
+                          <h3 className="font-bold mb-2">Edit Contact (mock)</h3>
+                          <input className="mb-2 w-full border rounded p-1" defaultValue={entry.name} />
+                          <input className="mb-2 w-full border rounded p-1" defaultValue={entry.position} />
+                          <input className="mb-2 w-full border rounded p-1" defaultValue={entry.department} />
+                          <input className="mb-2 w-full border rounded p-1" defaultValue={entry.phone} />
+                          <input className="mb-2 w-full border rounded p-1" defaultValue={entry.email} />
+                          <div className="flex gap-2 justify-end mt-2">
+                            <Button size="sm" onClick={() => setShowEdit(null)}>Save</Button>
+                            <Button size="sm" variant="outline" onClick={() => setShowEdit(null)}>Cancel</Button>
+                          </div>
+                        </div>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}
@@ -243,6 +264,37 @@ const DirectoryManagement = () => {
           </Card>
         </div>
       </div>
+
+      {/* Bulk Upload Modal */}
+      {showBulkUpload && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded shadow-lg w-96">
+            <h3 className="font-bold mb-2">Bulk Upload Contacts (mock)</h3>
+            <input type="file" accept=".csv" className="mb-4" />
+            <div className="flex gap-2 justify-end">
+              <Button size="sm" onClick={() => setShowBulkUpload(false)}>Close</Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Contact Modal */}
+      {showAdd && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded shadow-lg w-96">
+            <h3 className="font-bold mb-2">Add Contact (mock)</h3>
+            <input className="mb-2 w-full border rounded p-1" placeholder="Name" />
+            <input className="mb-2 w-full border rounded p-1" placeholder="Position" />
+            <input className="mb-2 w-full border rounded p-1" placeholder="Department" />
+            <input className="mb-2 w-full border rounded p-1" placeholder="Phone" />
+            <input className="mb-2 w-full border rounded p-1" placeholder="Email" />
+            <div className="flex gap-2 justify-end mt-2">
+              <Button size="sm" onClick={() => setShowAdd(false)}>Save</Button>
+              <Button size="sm" variant="outline" onClick={() => setShowAdd(false)}>Cancel</Button>
+            </div>
+          </div>
+        </div>
+      )}
     </DashboardLayout>
   );
 };

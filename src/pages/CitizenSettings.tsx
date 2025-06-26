@@ -1,4 +1,3 @@
-
 import DashboardLayout from "@/components/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, Mail, Phone, MapPin, Bell, Shield, Eye, Palette, Globe, Calendar, Edit, Save } from "lucide-react";
+import { useState } from "react";
 
 const CitizenSettings = () => {
   const userProfile = {
@@ -136,6 +136,10 @@ const CitizenSettings = () => {
       location: "Barangay San Isidro"
     }
   ];
+
+  const [showChangePassword, setShowChangePassword] = useState(false);
+  const [showDeactivate, setShowDeactivate] = useState(false);
+  const [voiceReader, setVoiceReader] = useState(false);
 
   return (
     <DashboardLayout userType="citizen">
@@ -312,10 +316,21 @@ const CitizenSettings = () => {
               <div className="space-y-4">
                 <h4 className="font-medium">Password & Authentication</h4>
                 <div className="space-y-3">
-                  <Button variant="outline" className="w-full justify-start">
+                  <Button variant="outline" className="w-full justify-start" onClick={() => setShowChangePassword(v => !v)}>
                     <Shield className="h-4 w-4 mr-2" />
                     Change Password
                   </Button>
+                  {showChangePassword && (
+                    <div className="p-4 bg-gray-50 rounded-lg mt-2 space-y-2">
+                      <Label htmlFor="current-password">Current Password</Label>
+                      <Input id="current-password" type="password" />
+                      <Label htmlFor="new-password">New Password</Label>
+                      <Input id="new-password" type="password" />
+                      <Label htmlFor="confirm-password">Confirm New Password</Label>
+                      <Input id="confirm-password" type="password" />
+                      <Button className="mt-2 w-full">Save Password</Button>
+                    </div>
+                  )}
                   <Button variant="outline" className="w-full justify-start">
                     <Phone className="h-4 w-4 mr-2" />
                     Setup Two-Factor Authentication
@@ -337,15 +352,13 @@ const CitizenSettings = () => {
                         <p className="text-xs text-gray-600">{setting.description}</p>
                       </div>
                       {setting.options ? (
-                        <Select defaultValue={setting.current?.toLowerCase().replace(/ /g, '-')}>
+                        <Select defaultValue={setting.current?.toLowerCase().replace(/ /g, '-')}> 
                           <SelectTrigger className="w-32">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
                             {setting.options.map((option) => (
-                              <SelectItem key={option} value={option.toLowerCase().replace(/ /g, '-')}>
-                                {option}
-                              </SelectItem>
+                              <SelectItem key={option} value={option.toLowerCase().replace(/ /g, '-')}>{option}</SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
@@ -355,6 +368,19 @@ const CitizenSettings = () => {
                     </div>
                   ))}
                 </div>
+                {/* Deactivate Account Option */}
+                <Button variant="destructive" className="w-full mt-4" onClick={() => setShowDeactivate(true)}>
+                  Deactivate Account
+                </Button>
+                {showDeactivate && (
+                  <div className="p-4 bg-red-50 rounded-lg mt-2">
+                    <p className="mb-2 text-sm text-red-700">Are you sure you want to deactivate your account? This action cannot be undone.</p>
+                    <div className="flex gap-2">
+                      <Button variant="destructive" onClick={() => setShowDeactivate(false)}>Confirm Deactivation</Button>
+                      <Button variant="outline" onClick={() => setShowDeactivate(false)}>Cancel</Button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </CardContent>
@@ -409,6 +435,14 @@ const CitizenSettings = () => {
               <CardDescription>Customize the interface for your needs</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              {/* Voice Reader Settings */}
+              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div>
+                  <p className="font-medium text-sm">Voice Reader</p>
+                  <p className="text-xs text-gray-600">Enable text-to-speech for page content</p>
+                </div>
+                <Switch checked={voiceReader} onCheckedChange={setVoiceReader} />
+              </div>
               {accessibilitySettings.map((setting, index) => (
                 <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div>

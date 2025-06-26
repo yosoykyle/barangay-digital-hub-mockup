@@ -1,11 +1,13 @@
-
 import DashboardLayout from "@/components/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart, Line, PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { TrendingUp, Users, FileText, Calendar, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 const Analytics = () => {
+  const [timeFilter, setTimeFilter] = useState("This Month");
+
   const monthlyData = [
     { month: "Jan", documents: 120, complaints: 15, services: 45, users: 50 },
     { month: "Feb", documents: 135, complaints: 12, services: 52, users: 65 },
@@ -63,6 +65,13 @@ const Analytics = () => {
     }
   ];
 
+  const loginHistory = [
+    { user: "Maria Santos", email: "maria.santos@email.com", date: "2025-07-01", device: "Mobile", status: "Success" },
+    { user: "Juan Dela Cruz", email: "juan.delacruz@email.com", date: "2025-07-01", device: "Desktop", status: "Success" },
+    { user: "Ana Rodriguez", email: "ana.rodriguez@barangay.gov.ph", date: "2025-06-30", device: "Mobile", status: "Failed" },
+    { user: "Carlos Mendoza", email: "carlos.mendoza@email.com", date: "2025-06-29", device: "Desktop", status: "Success" }
+  ];
+
   return (
     <DashboardLayout userType="admin">
       <div className="space-y-6">
@@ -71,10 +80,19 @@ const Analytics = () => {
             <h1 className="text-3xl font-bold text-gray-900">Reports & Analytics</h1>
             <p className="text-gray-600">System analytics and reporting</p>
           </div>
-          <Button className="bg-blue-600 hover:bg-blue-700">
-            <Download className="mr-2 h-4 w-4" />
-            Export Report
-          </Button>
+          <div className="flex gap-2 items-center">
+            {/* Time Filter */}
+            <select className="border rounded px-2 py-1" value={timeFilter} onChange={e => setTimeFilter(e.target.value)}>
+              <option>This Month</option>
+              <option>Last Month</option>
+              <option>This Quarter</option>
+              <option>This Year</option>
+            </select>
+            <Button className="bg-blue-600 hover:bg-blue-700">
+              <Download className="mr-2 h-4 w-4" />
+              Export Report
+            </Button>
+          </div>
         </div>
 
         {/* Key Metrics */}
@@ -122,32 +140,16 @@ const Analytics = () => {
             </CardContent>
           </Card>
 
-          {/* Service Distribution */}
+          {/* Heatmap Placeholder */}
           <Card>
             <CardHeader>
-              <CardTitle>Service Distribution</CardTitle>
-              <CardDescription>Most requested services breakdown</CardDescription>
+              <CardTitle>Usage Heatmap</CardTitle>
+              <CardDescription>Visualize peak activity periods (mock)</CardDescription>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                  <Pie
-                    data={serviceDistribution}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                  >
-                    {serviceDistribution.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
+              <div className="w-full h-[300px] bg-gray-100 rounded flex items-center justify-center text-gray-400">
+                [Heatmap Chart Placeholder]
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -226,6 +228,48 @@ const Analytics = () => {
                 <div className="text-3xl font-bold text-purple-600">4.6/5</div>
                 <div className="text-sm text-gray-600">Average User Rating</div>
               </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Login History Table */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Login History</CardTitle>
+            <CardDescription>Recent user login activity</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-sm">
+                <thead>
+                  <tr className="bg-gray-100">
+                    <th className="px-4 py-2 text-left">User</th>
+                    <th className="px-4 py-2 text-left">Email</th>
+                    <th className="px-4 py-2 text-left">Date</th>
+                    <th className="px-4 py-2 text-left">Device</th>
+                    <th className="px-4 py-2 text-left">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {loginHistory.map((log, i) => (
+                    <tr key={i} className="border-b">
+                      <td className="px-4 py-2">{log.user}</td>
+                      <td className="px-4 py-2">{log.email}</td>
+                      <td className="px-4 py-2">{log.date}</td>
+                      <td className="px-4 py-2">{log.device}</td>
+                      <td className="px-4 py-2">
+                        <span className={
+                          log.status === "Success"
+                            ? "text-green-600 font-medium"
+                            : "text-red-600 font-medium"
+                        }>
+                          {log.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </CardContent>
         </Card>

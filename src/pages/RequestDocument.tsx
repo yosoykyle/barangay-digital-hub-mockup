@@ -1,4 +1,3 @@
-
 import DashboardLayout from "@/components/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,7 +11,17 @@ import { useState } from "react";
 
 const RequestDocument = () => {
   const [selectedDocument, setSelectedDocument] = useState("");
-  
+  const [purpose, setPurpose] = useState("");
+  const [name, setName] = useState("");
+  const [dob, setDob] = useState("");
+  const [gender, setGender] = useState("");
+  const [civilStatus, setCivilStatus] = useState("");
+  const [contact, setContact] = useState("");
+  const [email, setEmail] = useState("");
+  const [cedula, setCedula] = useState("");
+  const [consent, setConsent] = useState(false);
+  const [feedback, setFeedback] = useState(0);
+
   const documentTypes = [
     { value: "certificate", label: "Barangay Certificate", fee: "₱50", processing: "3-5 days" },
     { value: "clearance", label: "Barangay Clearance", fee: "₱100", processing: "5-7 days" },
@@ -45,64 +54,61 @@ const RequestDocument = () => {
                 <CardDescription>Fill out the form to request official documents</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="document-type">Document Type</Label>
-                  <Select value={selectedDocument} onValueChange={setSelectedDocument}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select document type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {documentTypes.map(doc => (
-                        <SelectItem key={doc.value} value={doc.value}>
-                          {doc.label} - {doc.fee}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {selectedDocumentInfo && (
-                  <div className="p-4 bg-blue-50 rounded-lg">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium">{selectedDocumentInfo.label}</p>
-                        <p className="text-sm text-gray-600">Processing time: {selectedDocumentInfo.processing}</p>
-                      </div>
-                      <Badge variant="secondary">{selectedDocumentInfo.fee}</Badge>
-                    </div>
-                  </div>
-                )}
-
+                {/* Personal Info Fields */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="purpose">Purpose</Label>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select purpose" />
-                      </SelectTrigger>
+                    <Label htmlFor="name">Full Name</Label>
+                    <Input id="name" value={name} onChange={e => setName(e.target.value)} placeholder="Enter your full name" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="dob">Date of Birth</Label>
+                    <Input id="dob" type="date" value={dob} onChange={e => setDob(e.target.value)} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="gender">Gender</Label>
+                    <Select value={gender} onValueChange={setGender}>
+                      <SelectTrigger><SelectValue placeholder="Select gender" /></SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="employment">Employment</SelectItem>
-                        <SelectItem value="business">Business</SelectItem>
-                        <SelectItem value="travel">Travel</SelectItem>
-                        <SelectItem value="school">School</SelectItem>
+                        <SelectItem value="male">Male</SelectItem>
+                        <SelectItem value="female">Female</SelectItem>
                         <SelectItem value="other">Other</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="copies">Number of Copies</Label>
-                    <Select defaultValue="1">
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
+                    <Label htmlFor="civil-status">Civil Status</Label>
+                    <Select value={civilStatus} onValueChange={setCivilStatus}>
+                      <SelectTrigger><SelectValue placeholder="Select status" /></SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="1">1 copy</SelectItem>
-                        <SelectItem value="2">2 copies</SelectItem>
-                        <SelectItem value="3">3 copies</SelectItem>
-                        <SelectItem value="more">More than 3</SelectItem>
+                        <SelectItem value="single">Single</SelectItem>
+                        <SelectItem value="married">Married</SelectItem>
+                        <SelectItem value="widowed">Widowed</SelectItem>
+                        <SelectItem value="divorced">Divorced</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="contact">Contact Number</Label>
+                    <Input id="contact" value={contact} onChange={e => setContact(e.target.value)} placeholder="09xxxxxxxxx" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="your@email.com" />
+                  </div>
+                </div>
+
+                {/* Cedula Number (if applicable) */}
+                {(selectedDocument === "clearance" || selectedDocument === "business") && (
+                  <div className="space-y-2">
+                    <Label htmlFor="cedula">Cedula Number</Label>
+                    <Input id="cedula" value={cedula} onChange={e => setCedula(e.target.value)} placeholder="Enter Cedula Number" />
+                  </div>
+                )}
+
+                {/* Purpose of Request (Textarea) */}
+                <div className="space-y-2">
+                  <Label htmlFor="purpose">Purpose of Request</Label>
+                  <Textarea id="purpose" value={purpose} onChange={e => setPurpose(e.target.value)} placeholder="State your purpose..." className="min-h-[80px]" />
                 </div>
 
                 <div className="space-y-2">
@@ -127,6 +133,12 @@ const RequestDocument = () => {
                   </div>
                 </div>
 
+                {/* Declaration & Consent Checkbox */}
+                <div className="flex items-center space-x-2">
+                  <input id="consent" type="checkbox" checked={consent} onChange={e => setConsent(e.target.checked)} />
+                  <Label htmlFor="consent" className="text-sm">I declare that the information provided is true and I consent to the processing of my data.</Label>
+                </div>
+
                 <div className="flex space-x-4">
                   <Button className="flex-1 bg-blue-600 hover:bg-blue-700">
                     Submit Request
@@ -148,21 +160,45 @@ const RequestDocument = () => {
                   Your Requests
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-4 px-4 md:px-6 pb-4 pt-2 bg-white">
                 {currentRequests.map(request => (
-                  <div key={request.id} className="p-3 bg-gray-50 rounded-lg">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <p className="font-medium text-sm">{request.type}</p>
-                        <p className="text-xs text-gray-600">#{request.id}</p>
-                        <p className="text-xs text-gray-500">{request.submitted}</p>
+                  <div key={request.id} className="p-4 bg-gray-50 rounded-lg shadow-sm mb-4">
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-sm break-words">{request.type}</p>
+                        <p className="text-xs text-gray-600 break-words">#{request.id}</p>
+                        <p className="text-xs text-gray-500 break-words">{request.submitted}</p>
+                        {/* Document Tracking Timeline */}
+                        <div className="flex items-center space-x-2 mt-1 flex-wrap">
+                          <span className="text-xs">Submitted</span>
+                          <span className={`h-1 w-6 rounded-full ${request.status === 'Under Review' || request.status === 'Processing' || request.status === 'Ready for Pickup' ? 'bg-blue-500' : 'bg-gray-300'}`}></span>
+                          <span className="text-xs">Under Review</span>
+                          <span className={`h-1 w-6 rounded-full ${request.status === 'Processing' || request.status === 'Ready for Pickup' ? 'bg-blue-500' : 'bg-gray-300'}`}></span>
+                          <span className="text-xs">Processing</span>
+                          <span className={`h-1 w-6 rounded-full ${request.status === 'Ready for Pickup' ? 'bg-blue-500' : 'bg-gray-300'}`}></span>
+                          <span className="text-xs">Ready</span>
+                        </div>
                       </div>
-                      <Badge 
-                        variant={request.status === "Ready for Pickup" ? "default" : "secondary"}
-                        className={request.status === "Ready for Pickup" ? "bg-green-600" : ""}
-                      >
-                        {request.status}
-                      </Badge>
+                      <div className="flex flex-col items-end flex-shrink-0 text-right gap-2 min-w-[110px]">
+                        <Badge 
+                          variant={request.status === "Ready for Pickup" ? "default" : "secondary"}
+                          className={request.status === "Ready for Pickup" ? "bg-green-600" : ""}
+                        >
+                          {request.status}
+                        </Badge>
+                        {/* Download Proof Button (mock) */}
+                        {request.status === "Ready for Pickup" && (
+                          <Button size="sm" variant="outline" className="mt-1 w-full">Download Proof</Button>
+                        )}
+                        {/* Feedback Rating Bar (mock) */}
+                        {request.status === "Ready for Pickup" && (
+                          <div className="flex items-center mt-1 w-full justify-end">
+                            {[1,2,3,4,5].map(star => (
+                              <span key={star} onClick={() => setFeedback(star)} className={`cursor-pointer text-lg ${feedback >= star ? 'text-yellow-400' : 'text-gray-300'}`}>★</span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 ))}

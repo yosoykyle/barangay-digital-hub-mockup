@@ -1,4 +1,3 @@
-
 import DashboardLayout from "@/components/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,8 +5,15 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Search, Phone, Mail, MapPin, Clock, Users, Star, ExternalLink } from "lucide-react";
+import { useState } from "react";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const ContactDirectory = () => {
+  const [search, setSearch] = useState("");
+  const [showAutocomplete, setShowAutocomplete] = useState(false);
+  const [category, setCategory] = useState("all");
+
   const barangayOfficials = [
     {
       id: 1,
@@ -166,6 +172,33 @@ const ContactDirectory = () => {
     }
   ];
 
+  const autocompleteOptions = [
+    "Maria Santos (Barangay Captain)",
+    "Roberto Cruz (Secretary)",
+    "Police Emergency",
+    "Document Processing Office",
+    "Upcoming Vaccination Drive"
+  ];
+
+  const newsItems = [
+    { title: "Upcoming Vaccination Drive", date: "2025-07-01", summary: "Free vaccines at the barangay hall.", category: "Health" },
+    { title: "Barangay Fiesta Announced", date: "2025-08-10", summary: "Annual fiesta with parade and events.", category: "Events" },
+    { title: "New Business Permit Guidelines", date: "2025-06-20", summary: "Updated requirements for business permits.", category: "Business" }
+  ];
+
+  const announcements = [
+    { title: "Water Interruption Notice", content: "There will be a scheduled water interruption on July 3, 2025 from 8AM-5PM." },
+    { title: "Barangay Hall Renovation", content: "Renovation works will start July 10, 2025. Some offices will be temporarily relocated." }
+  ];
+
+  // Category Filters
+  const categoryFilters = [
+    { label: "All", value: "all" },
+    { label: "Officials", value: "officials" },
+    { label: "Services", value: "services" },
+    { label: "Emergency", value: "emergency" }
+  ];
+
   return (
     <DashboardLayout userType="citizen">
       <div className="space-y-6">
@@ -174,7 +207,7 @@ const ContactDirectory = () => {
           <p className="text-gray-600">Find officials, services, and important contacts</p>
         </div>
 
-        {/* Search Bar */}
+        {/* Search Bar with Auto-complete */}
         <Card>
           <CardContent className="p-4">
             <div className="relative">
@@ -182,10 +215,28 @@ const ContactDirectory = () => {
               <Input 
                 placeholder="Search for officials, services, or departments..." 
                 className="pl-10"
+                value={search}
+                onChange={e => { setSearch(e.target.value); setShowAutocomplete(true); }}
+                onBlur={() => setTimeout(() => setShowAutocomplete(false), 200)}
+                onFocus={() => setShowAutocomplete(true)}
               />
+              {showAutocomplete && search && (
+                <div className="absolute left-0 right-0 mt-1 bg-white border rounded shadow z-10">
+                  {autocompleteOptions.filter(opt => opt.toLowerCase().includes(search.toLowerCase())).map((opt, i) => (
+                    <div key={i} className="px-4 py-2 hover:bg-blue-50 cursor-pointer" onMouseDown={() => { setSearch(opt); setShowAutocomplete(false); }}>{opt}</div>
+                  ))}
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
+
+        <div className="flex gap-2 mb-4">
+          {/* Category Filters */}
+          {categoryFilters.map((filter) => (
+            <Button key={filter.value} size="sm" variant={category === filter.value ? "default" : "outline"} onClick={() => setCategory(filter.value)}>{filter.label}</Button>
+          ))}
+        </div>
 
         {/* Emergency Contacts */}
         <Card className="border-red-200 bg-red-50">
@@ -223,6 +274,7 @@ const ContactDirectory = () => {
               <CardDescription>Contact your local government representatives</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              {/* Contact Cards: Add Bookmark, Share, Text-to-Speech */}
               {barangayOfficials.map((official) => (
                 <div key={official.id} className="p-4 bg-gray-50 rounded-lg">
                   <div className="flex items-start space-x-4">
@@ -236,6 +288,12 @@ const ContactDirectory = () => {
                         {official.priority === "high" && (
                           <Star className="h-4 w-4 text-yellow-500 fill-current" />
                         )}
+                        {/* Bookmark Button */}
+                        <Button size="icon" variant="ghost" title="Bookmark"><Star className="h-4 w-4" /></Button>
+                        {/* Share Button */}
+                        <Button size="icon" variant="ghost" title="Share"><ExternalLink className="h-4 w-4" /></Button>
+                        {/* Text-to-Speech Button */}
+                        <Button size="icon" variant="ghost" title="Text to Speech">🔊</Button>
                       </div>
                       <p className="text-sm text-blue-600 font-medium">{official.position}</p>
                       <p className="text-sm text-gray-600">{official.department}</p>
@@ -341,6 +399,50 @@ const ContactDirectory = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* News Grid with Sorting */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Barangay News</CardTitle>
+            <CardDescription>Latest updates and announcements</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex justify-end mb-2">
+              <Label className="mr-2">Sort by:</Label>
+              <Select defaultValue="date">
+                <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="date">Date</SelectItem>
+                  <SelectItem value="category">Category</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {newsItems.map((news, i) => (
+                <Card key={i} className="bg-blue-50">
+                  <CardContent className="p-4">
+                    <h4 className="font-medium mb-1">{news.title}</h4>
+                    <p className="text-xs text-gray-600 mb-1">{news.date} | {news.category}</p>
+                    <p className="text-sm text-gray-700 mb-2">{news.summary}</p>
+                    <Button size="sm" variant="outline">Read More</Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Announcement Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          {announcements.map((a, i) => (
+            <Card key={i} className="bg-yellow-50">
+              <CardContent className="p-4">
+                <h4 className="font-bold mb-1">{a.title}</h4>
+                <p className="text-sm text-gray-700">{a.content}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     </DashboardLayout>
   );

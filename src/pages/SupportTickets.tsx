@@ -1,4 +1,3 @@
-
 import DashboardLayout from "@/components/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -10,6 +9,8 @@ import { useState } from "react";
 const SupportTickets = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("all");
+  const [showDetails, setShowDetails] = useState<string | null>(null);
+  const [replyText, setReplyText] = useState("");
 
   const tickets = [
     {
@@ -85,6 +86,28 @@ const SupportTickets = () => {
     { label: "In Progress", value: "18", icon: Clock, color: "text-yellow-600" },
     { label: "Resolved", value: "86", icon: CheckCircle, color: "text-green-600" }
   ];
+
+  const ticketLogs = {
+    "TK-001": [
+      { time: "2024-06-26 09:15 AM", user: "Maria Santos", action: "Ticket submitted", message: "User reports unable to download completed document" },
+      { time: "2024-06-26 10:30 AM", user: "Admin Staff", action: "Status updated", message: "Assigned to Admin Staff" }
+    ],
+    "TK-002": [
+      { time: "2024-06-25 02:30 PM", user: "Juan Dela Cruz", action: "Ticket submitted", message: "Document request shows as pending for over a week" },
+      { time: "2024-06-26 08:45 AM", user: "Document Officer", action: "Status updated", message: "Assigned to Document Officer" }
+    ],
+    "TK-003": [
+      { time: "2024-06-24 11:20 AM", user: "Ana Rodriguez", action: "Ticket submitted", message: "Password reset email not being received" },
+      { time: "2024-06-25 09:15 AM", user: "IT Support", action: "Status updated", message: "Resolved by IT Support" }
+    ],
+    "TK-004": [
+      { time: "2024-06-26 01:45 PM", user: "Carlos Mendoza", action: "Ticket submitted", message: "Error message appears when trying to submit complaint" }
+    ],
+    "TK-005": [
+      { time: "2024-06-25 04:20 PM", user: "Rosa Fernandez", action: "Ticket submitted", message: "Phone number for health officer is outdated" },
+      { time: "2024-06-26 11:00 AM", user: "Content Manager", action: "Status updated", message: "Assigned to Content Manager" }
+    ]
+  };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
@@ -235,10 +258,10 @@ const SupportTickets = () => {
                     </TableCell>
                     <TableCell>
                       <div className="flex space-x-2">
-                        <Button variant="outline" size="sm">
+                        <Button variant="outline" size="sm" onClick={() => setShowDetails(ticket.id)}>
                           View
                         </Button>
-                        <Button variant="outline" size="sm">
+                        <Button variant="outline" size="sm" onClick={() => setShowDetails(ticket.id)}>
                           Reply
                         </Button>
                       </div>
@@ -276,6 +299,54 @@ const SupportTickets = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* Ticket Details Modal (mock) */}
+        {showDetails && (() => {
+          const ticket = tickets.find(t => t.id === showDetails);
+          if (!ticket) return null;
+          return (
+            <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+              <div className="bg-white p-6 rounded shadow-lg w-full max-w-lg">
+                <div className="flex justify-between items-center mb-2">
+                  <h3 className="font-bold text-lg">Ticket Details: {ticket.id}</h3>
+                  <Button size="sm" variant="outline" onClick={() => setShowDetails(null)}>Close</Button>
+                </div>
+                <div className="mb-2">
+                  <div className="font-semibold">{ticket.subject}</div>
+                  <div className="text-sm text-gray-600 mb-1">{ticket.description}</div>
+                  <div className="flex gap-2 text-xs text-gray-500 mb-2">
+                    <span>Status: {ticket.status}</span>
+                    <span>Priority: {ticket.priority}</span>
+                    <span>Category: {ticket.category}</span>
+                  </div>
+                  <div className="text-xs text-gray-500 mb-2">Submitted by: {ticket.submitter} ({ticket.email})</div>
+                </div>
+                {/* Log Timeline */}
+                <div className="mb-4">
+                  <h4 className="font-medium mb-1">Log Timeline</h4>
+                  <div className="max-h-32 overflow-y-auto space-y-2">
+                    {(ticketLogs[ticket.id] || []).map((log, i) => (
+                      <div key={i} className="p-2 bg-gray-50 rounded">
+                        <div className="text-xs text-gray-500">{log.time} - {log.user}</div>
+                        <div className="text-sm"><span className="font-semibold">{log.action}:</span> {log.message}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                {/* Reply Area */}
+                <div className="mb-2">
+                  <textarea
+                    className="w-full border rounded p-2 min-h-[60px]"
+                    placeholder="Type your reply..."
+                    value={replyText}
+                    onChange={e => setReplyText(e.target.value)}
+                  />
+                </div>
+                <Button className="w-full" onClick={() => { setReplyText(""); setShowDetails(null); }}>Send Reply</Button>
+              </div>
+            </div>
+          );
+        })()}
       </div>
     </DashboardLayout>
   );

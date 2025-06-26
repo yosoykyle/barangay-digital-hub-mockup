@@ -17,6 +17,9 @@ const Index = () => {
   const [showOtpPrompt, setShowOtpPrompt] = useState(false);
   const [emailInput, setEmailInput] = useState("user@example.com");
   const [otpInput, setOtpInput] = useState("");
+  // Track which role is logging in
+  const [loginRole, setLoginRole] = useState<"citizen" | "admin">("citizen");
+
   const handleLogin = (userType: "citizen" | "admin") => {
     if (userType === "citizen") {
       navigate("/citizen/dashboard");
@@ -112,10 +115,10 @@ const Index = () => {
                       <Button variant="link" className="p-0 text-blue-600" onClick={() => navigate("/forgot-password")}>Forgot Password?</Button>
                     </div>
                     <div className="space-y-2">
-                      <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={() => setShowOtpPrompt(true)}>
+                      <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={() => { setShowOtpPrompt(true); setLoginRole("citizen"); }}>
                         Login as Citizen
                       </Button>
-                      <Button variant="outline" className="w-full" onClick={() => setShowOtpPrompt(true)}>
+                      <Button variant="outline" className="w-full" onClick={() => { setShowOtpPrompt(true); setLoginRole("admin"); }}>
                         Admin Login
                       </Button>
                     </div>
@@ -123,7 +126,7 @@ const Index = () => {
                         <Label htmlFor="otp">Enter OTP</Label>
                         <Input id="otp" type="text" placeholder="123456" value={otpInput} onChange={e => setOtpInput(e.target.value)} />
                         <div className="text-xs text-gray-500">Sample OTP code: 123456</div>
-                        <Button onClick={() => handleLogin("citizen")} className="w-full mt-2 bg-blue-700 hover:bg-blue-600">Submit OTP</Button>
+                        <Button onClick={() => handleLogin(loginRole)} className="w-full mt-2 bg-blue-700 hover:bg-blue-600">Submit OTP</Button>
                       </div>}
                   </TabsContent>
                   <TabsContent value="qr" className="space-y-4 mt-6">
@@ -131,7 +134,7 @@ const Index = () => {
                       <div className="w-48 h-48 bg-gray-200 rounded-lg flex items-center justify-center">
                         <p className="text-gray-500">QR scan prompt: Point your camera at the QR code to login</p>
                       </div>
-                      <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={() => setShowOtpPrompt(true)}>
+                      <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={() => { setShowOtpPrompt(true); setLoginRole("citizen"); }}>
                         Scan QR Code
                       </Button>
                     </div>
@@ -139,7 +142,7 @@ const Index = () => {
                         <Label htmlFor="otp-qr">Enter OTP</Label>
                         <Input id="otp-qr" type="text" placeholder="123456" value={otpInput} onChange={e => setOtpInput(e.target.value)} />
                         <div className="text-xs text-gray-500">Sample OTP code: 123456</div>
-                        <Button className="w-full mt-2" onClick={() => handleLogin("citizen")}>Submit OTP</Button>
+                        <Button className="w-full mt-2" onClick={() => handleLogin(loginRole)}>Submit OTP</Button>
                       </div>}
                   </TabsContent>
                 </Tabs>

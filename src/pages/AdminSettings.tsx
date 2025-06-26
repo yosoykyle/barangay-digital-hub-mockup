@@ -1,4 +1,3 @@
-
 import DashboardLayout from "@/components/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -31,6 +30,9 @@ const AdminSettings = () => {
     passwordPolicy: "strong",
     loginAttempts: "5"
   });
+
+  const [showPasswordReset, setShowPasswordReset] = useState(false);
+  const [showDeactivate, setShowDeactivate] = useState(false);
 
   const systemStatus = [
     { label: "System Status", value: "Online", status: "success", icon: Globe },
@@ -150,6 +152,38 @@ const AdminSettings = () => {
               <div className="pt-2">
                 <p className="text-sm text-gray-600">Last Login: {profileData.lastLogin}</p>
               </div>
+              <Button variant="outline" className="w-full" onClick={() => setShowPasswordReset(true)}>
+                <Lock className="h-4 w-4 mr-2" />
+                Reset Password
+              </Button>
+              {showPasswordReset && (
+                <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+                  <div className="bg-white p-6 rounded shadow-lg w-96">
+                    <h3 className="font-bold mb-2">Reset Password (mock)</h3>
+                    <input className="mb-2 w-full border rounded p-1" type="password" placeholder="New Password" />
+                    <input className="mb-2 w-full border rounded p-1" type="password" placeholder="Confirm New Password" />
+                    <div className="flex gap-2 justify-end mt-2">
+                      <Button size="sm" onClick={() => setShowPasswordReset(false)}>Save</Button>
+                      <Button size="sm" variant="outline" onClick={() => setShowPasswordReset(false)}>Cancel</Button>
+                    </div>
+                  </div>
+                </div>
+              )}
+              <Button variant="destructive" className="w-full" onClick={() => setShowDeactivate(true)}>
+                Deactivate Account
+              </Button>
+              {showDeactivate && (
+                <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+                  <div className="bg-white p-6 rounded shadow-lg w-96">
+                    <h3 className="font-bold mb-2 text-red-700">Deactivate Account</h3>
+                    <p className="mb-4 text-sm">Are you sure you want to deactivate your admin account? This action cannot be undone.</p>
+                    <div className="flex gap-2 justify-end">
+                      <Button size="sm" variant="destructive" onClick={() => setShowDeactivate(false)}>Confirm</Button>
+                      <Button size="sm" variant="outline" onClick={() => setShowDeactivate(false)}>Cancel</Button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
 

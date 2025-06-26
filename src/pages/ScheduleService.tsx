@@ -1,4 +1,3 @@
-
 import DashboardLayout from "@/components/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar, Clock, MapPin, User, Phone, CheckCircle, AlertCircle } from "lucide-react";
+import { useState } from "react";
 
 const ScheduleService = () => {
   const availableServices = [
@@ -67,6 +67,33 @@ const ScheduleService = () => {
       status: "Pending Confirmation",
       location: "Barangay Hall",
       notes: "Property dispute consultation"
+    },
+    {
+      id: "APPT-003",
+      service: "Ambulance",
+      date: "2025-07-20",
+      time: "10:00 AM",
+      status: "Approved",
+      location: "Emergency Bay",
+      notes: "Emergency transport"
+    },
+    {
+      id: "APPT-004",
+      service: "Court",
+      date: "2025-07-22",
+      time: "1:00 PM",
+      status: "Rescheduled",
+      location: "Barangay Court",
+      notes: "Hearing rescheduled"
+    },
+    {
+      id: "APPT-005",
+      service: "Event",
+      date: "2025-07-25",
+      time: "3:00 PM",
+      status: "Cancelled",
+      location: "Barangay Hall",
+      notes: "Event cancelled by organizer"
     }
   ];
 
@@ -99,6 +126,10 @@ const ScheduleService = () => {
     "3:00 PM", "3:30 PM", "4:00 PM", "4:30 PM"
   ];
 
+  const [bookingType, setBookingType] = useState("");
+  const [altDate, setAltDate] = useState("");
+  const [declaration, setDeclaration] = useState(false);
+
   return (
     <DashboardLayout userType="citizen">
       <div className="space-y-6">
@@ -118,6 +149,22 @@ const ScheduleService = () => {
               <CardDescription>Select a service and preferred time slot</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              {/* Booking Type Dropdown */}
+              <div>
+                <Label>Booking Type</Label>
+                <Select value={bookingType} onValueChange={setBookingType}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select booking type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="ambulance">Ambulance</SelectItem>
+                    <SelectItem value="court">Court</SelectItem>
+                    <SelectItem value="event">Event</SelectItem>
+                    <SelectItem value="service">Other Service</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="client-name">Full Name</Label>
@@ -168,6 +215,11 @@ const ScheduleService = () => {
               </div>
 
               <div>
+                <Label htmlFor="alt-date">Alternative Date</Label>
+                <Input id="alt-date" type="date" value={altDate} onChange={e => setAltDate(e.target.value)} />
+              </div>
+
+              <div>
                 <Label htmlFor="purpose">Purpose/Notes</Label>
                 <Textarea 
                   id="purpose" 
@@ -176,7 +228,22 @@ const ScheduleService = () => {
                 />
               </div>
 
-              <Button className="w-full">
+              {/* Upload Files */}
+              <div className="space-y-2">
+                <Label>Upload Supporting Files (Optional)</Label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                  <p className="mt-2 text-sm text-gray-600">Upload documents or images for your booking</p>
+                  <Button variant="outline" className="mt-2">Choose Files</Button>
+                </div>
+              </div>
+
+              {/* Declaration Checkbox */}
+              <div className="flex items-center space-x-2">
+                <input id="declaration" type="checkbox" checked={declaration} onChange={e => setDeclaration(e.target.checked)} />
+                <Label htmlFor="declaration" className="text-sm">I confirm the information is accurate and consent to data processing.</Label>
+              </div>
+              
+              <Button className="w-full" disabled={!declaration}>
                 Schedule Appointment
               </Button>
             </CardContent>
@@ -235,11 +302,21 @@ const ScheduleService = () => {
                       <div className="flex items-center space-x-2 mb-2">
                         <h4 className="font-medium text-sm">{appointment.service}</h4>
                         <Badge 
-                          variant={appointment.status === "Confirmed" ? "default" : "secondary"}
-                          className={appointment.status === "Confirmed" ? "bg-green-600" : "bg-yellow-600"}
+                          variant={
+                            appointment.status === "Confirmed" ? "default" :
+                            appointment.status === "Approved" ? "default" :
+                            appointment.status === "Rescheduled" ? "secondary" :
+                            appointment.status === "Cancelled" ? "destructive" :
+                            "secondary"
+                          }
+                          className={
+                            appointment.status === "Confirmed" ? "bg-green-600" :
+                            appointment.status === "Approved" ? "bg-blue-600" :
+                            appointment.status === "Rescheduled" ? "bg-yellow-600" :
+                            appointment.status === "Cancelled" ? "bg-red-600" :
+                            "bg-yellow-600"
+                          }
                         >
-                          {appointment.status === "Confirmed" && <CheckCircle className="mr-1 h-3 w-3" />}
-                          {appointment.status === "Pending Confirmation" && <AlertCircle className="mr-1 h-3 w-3" />}
                           {appointment.status}
                         </Badge>
                       </div>
@@ -309,6 +386,28 @@ const ScheduleService = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* Real-Time Calendar Placeholder */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <Calendar className="mr-2 h-5 w-5" />
+              Real-Time Calendar (Preview)
+            </CardTitle>
+            <CardDescription>
+              Monthly/Weekly toggle and slot hover info coming soon.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center gap-4 mb-4">
+              <Button size="sm" variant="outline">Monthly View</Button>
+              <Button size="sm" variant="outline">Weekly View</Button>
+            </div>
+            <div className="w-full h-48 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400">
+              [Calendar UI Placeholder]
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </DashboardLayout>
   );

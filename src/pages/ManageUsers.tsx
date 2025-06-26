@@ -1,4 +1,3 @@
-
 import DashboardLayout from "@/components/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -9,6 +8,9 @@ import { useState } from "react";
 
 const ManageUsers = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [showRoleEditor, setShowRoleEditor] = useState<number | null>(null);
+  const [showImport, setShowImport] = useState(false);
+  const [showExport, setShowExport] = useState(false);
 
   const users = [
     {
@@ -67,6 +69,7 @@ const ManageUsers = () => {
       complaintsFilED: 0
     }
   ];
+  const [userStatus, setUserStatus] = useState(users.map(u => u.status));
 
   const userStats = [
     { label: "Total Users", value: "1,248", change: "+12%" },
@@ -132,6 +135,12 @@ const ManageUsers = () => {
                 <CardDescription>Manage user accounts and permissions</CardDescription>
               </div>
               <div className="flex gap-2">
+                <Button variant="outline" onClick={() => setShowImport(true)}>
+                  Import CSV
+                </Button>
+                <Button variant="outline" onClick={() => setShowExport(true)}>
+                  Export CSV
+                </Button>
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                   <input
@@ -148,6 +157,23 @@ const ManageUsers = () => {
                 </Button>
               </div>
             </div>
+            {/* Import/Export CSV Mock Dialogs */}
+            {showImport && (
+              <div className="absolute top-20 right-10 bg-white border rounded shadow p-4 z-50">
+                <p className="mb-2 font-medium">Import Users from CSV (mock)</p>
+                <input type="file" accept=".csv" className="mb-2" />
+                <div className="flex gap-2">
+                  <Button size="sm" onClick={() => setShowImport(false)}>Close</Button>
+                </div>
+              </div>
+            )}
+            {showExport && (
+              <div className="absolute top-20 right-10 bg-white border rounded shadow p-4 z-50">
+                <p className="mb-2 font-medium">Export Users to CSV (mock)</p>
+                <Button size="sm" onClick={() => setShowExport(false)}>Download CSV</Button>
+                <Button size="sm" variant="outline" onClick={() => setShowExport(false)}>Close</Button>
+              </div>
+            )}
           </CardHeader>
           <CardContent>
             <Table>
@@ -162,7 +188,7 @@ const ManageUsers = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {users.map((user) => (
+                {users.map((user, idx) => (
                   <TableRow key={user.id}>
                     <TableCell>
                       <div className="flex items-center space-x-3">
@@ -181,8 +207,8 @@ const ManageUsers = () => {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <Badge className={getStatusColor(user.status)}>
-                        {user.status}
+                      <Badge className={getStatusColor(userStatus[idx])}>
+                        {userStatus[idx]}
                       </Badge>
                     </TableCell>
                     <TableCell>{user.lastLogin}</TableCell>
@@ -197,8 +223,35 @@ const ManageUsers = () => {
                         <Button variant="ghost" size="sm">
                           <Edit className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="sm">
+                        {/* Role Editor */}
+                        <Button variant="ghost" size="sm" onClick={() => setShowRoleEditor(user.id)}>
                           <Shield className="h-4 w-4" />
+                        </Button>
+                        {showRoleEditor === user.id && (
+                          <div className="absolute z-50 bg-white border rounded shadow p-4 mt-2">
+                            <p className="mb-2 font-medium">Edit Role (mock)</p>
+                            <select className="border rounded p-1 mb-2">
+                              <option>Citizen</option>
+                              <option>Staff</option>
+                              <option>Admin</option>
+                            </select>
+                            <div className="flex gap-2">
+                              <Button size="sm" onClick={() => setShowRoleEditor(null)}>Save</Button>
+                              <Button size="sm" variant="outline" onClick={() => setShowRoleEditor(null)}>Cancel</Button>
+                            </div>
+                          </div>
+                        )}
+                        {/* Suspend/Activate Toggle */}
+                        <Button variant="ghost" size="sm" onClick={() => {
+                          const updated = [...userStatus];
+                          updated[idx] = updated[idx] === "Active" ? "Suspended" : "Active";
+                          setUserStatus(updated);
+                        }}>
+                          {userStatus[idx] === "Active" ? (
+                            <span className="text-yellow-600">Suspend</span>
+                          ) : (
+                            <span className="text-green-600">Activate</span>
+                          )}
                         </Button>
                         <Button variant="ghost" size="sm" className="text-red-600">
                           <Trash2 className="h-4 w-4" />
