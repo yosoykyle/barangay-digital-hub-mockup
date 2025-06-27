@@ -1,8 +1,9 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Home, FileText, Calendar, Users, HelpCircle, Settings, BarChart3, UserCog, Menu, Bell, LogOut, Bot, Search } from "lucide-react";
+import { Home, FileText, Calendar, Users, HelpCircle, Settings, BarChart3, UserCog, Menu, Bell, LogOut, Bot, Search, CheckSquare, Megaphone } from "lucide-react";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -29,6 +30,8 @@ const DashboardLayout = ({ children, userType }: DashboardLayoutProps) => {
   const adminMenuItems = [
     { icon: Home, label: "Dashboard", path: "/admin/dashboard" },
     { icon: UserCog, label: "Manage Users", path: "/admin/manage-users" },
+    { icon: CheckSquare, label: "Approvals", path: "/admin/approvals" },
+    { icon: Megaphone, label: "Announcements", path: "/admin/announcements" },
     { icon: BarChart3, label: "Analytics", path: "/admin/analytics" },
     { icon: Users, label: "Directory", path: "/admin/directory" },
     { icon: HelpCircle, label: "Support Tickets", path: "/admin/support-tickets" },

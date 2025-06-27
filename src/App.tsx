@@ -20,6 +20,8 @@ import Analytics from "./pages/Analytics";
 import DirectoryManagement from "./pages/DirectoryManagement";
 import SupportTickets from "./pages/SupportTickets";
 import AdminSettings from "./pages/AdminSettings";
+import ApprovalRequests from "./pages/ApprovalRequests";
+import ManageAnnouncements from "./pages/ManageAnnouncements";
 import NotFound from "./pages/NotFound";
 import ForgotPassword from "./pages/ForgotPassword";
 
@@ -48,6 +50,8 @@ const App = () => (
           <Route path="/admin/directory" element={<DirectoryManagement />} />
           <Route path="/admin/support-tickets" element={<SupportTickets />} />
           <Route path="/admin/settings" element={<AdminSettings />} />
+          <Route path="/admin/approvals" element={<ApprovalRequests />} />
+          <Route path="/admin/announcements" element={<ManageAnnouncements />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
