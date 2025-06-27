@@ -4,13 +4,14 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { UserPlus, Search, Filter, MoreHorizontal, Edit, Trash2, Shield, User } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const ManageUsers = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showRoleEditor, setShowRoleEditor] = useState<number | null>(null);
   const [showImport, setShowImport] = useState(false);
   const [showExport, setShowExport] = useState(false);
+  const [showQrPopup, setShowQrPopup] = useState(true);
 
   const users = [
     {
@@ -97,6 +98,30 @@ const ManageUsers = () => {
 
   return (
     <DashboardLayout userType="admin">
+      {/* QR Code Scan Verification Popup for Admin Login */}
+      {showQrPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-sm flex flex-col items-center">
+            <div className="mb-4 flex flex-col items-center">
+              <div className="h-20 w-20 bg-gray-200 rounded flex items-center justify-center mb-2">
+                {/* Mock QR code icon */}
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="8" fill="#E5E7EB"/><rect x="8" y="8" width="8" height="8" fill="#111827"/><rect x="32" y="8" width="8" height="8" fill="#111827"/><rect x="8" y="32" width="8" height="8" fill="#111827"/><rect x="32" y="32" width="8" height="8" fill="#111827"/><rect x="20" y="20" width="8" height="8" fill="#111827"/></svg>
+              </div>
+              <p className="font-semibold text-lg">Please scan your Admin ID to continue</p>
+            </div>
+            <div className="mb-4 w-full">
+              <div className="flex flex-col gap-1 text-sm text-gray-700">
+                <span><b>User:</b> mark@bgy.gov</span>
+                <span><b>Role:</b> Admin</span>
+                <span><b>Status:</b> Active</span>
+              </div>
+            </div>
+            <Button className="w-full mt-2" onClick={() => setShowQrPopup(false)}>
+              Close
+            </Button>
+          </div>
+        </div>
+      )}
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
