@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Upload, FileText, Calendar, Clock } from "lucide-react";
 import { useState } from "react";
+import RequestDocumentSuccess from "@/components/RequestDocumentSuccess";
 
 const RequestDocument = () => {
   const [selectedDocument, setSelectedDocument] = useState("");
@@ -21,6 +22,8 @@ const RequestDocument = () => {
   const [cedula, setCedula] = useState("");
   const [consent, setConsent] = useState(false);
   const [feedback, setFeedback] = useState(0);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [submittedRequestNumber, setSubmittedRequestNumber] = useState("");
 
   const documentTypes = [
     { value: "certificate", label: "Barangay Certificate", fee: "₱50", processing: "3-5 days" },
@@ -36,6 +39,46 @@ const RequestDocument = () => {
   ];
 
   const selectedDocumentInfo = documentTypes.find(doc => doc.value === selectedDocument);
+
+  const handleSubmitRequest = () => {
+    // Generate mock request number
+    const mockRequestNumber = `REQ-2025-${String(Math.floor(Math.random() * 9999)).padStart(4, '0')}`;
+    setSubmittedRequestNumber(mockRequestNumber);
+    setShowSuccess(true);
+  };
+
+  const handleBackToRequest = () => {
+    setShowSuccess(false);
+    // Reset form
+    setSelectedDocument("");
+    setPurpose("");
+    setName("");
+    setDob("");
+    setGender("");
+    setCivilStatus("");
+    setContact("");
+    setEmail("");
+    setCedula("");
+    setConsent(false);
+  };
+
+  if (showSuccess) {
+    return (
+      <DashboardLayout userType="citizen">
+        <div className="space-y-6">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Request Document</h1>
+            <p className="text-gray-600">Your request has been successfully submitted</p>
+          </div>
+          <RequestDocumentSuccess 
+            onBack={handleBackToRequest}
+            requestNumber={submittedRequestNumber}
+            documentType={selectedDocumentInfo?.label || "Barangay Certificate"}
+          />
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout userType="citizen">
@@ -140,7 +183,7 @@ const RequestDocument = () => {
                 </div>
 
                 <div className="flex space-x-4">
-                  <Button className="flex-1 bg-blue-600 hover:bg-blue-700">
+                  <Button onClick={handleSubmitRequest} className="flex-1 bg-blue-600 hover:bg-blue-700">
                     Submit Request
                   </Button>
                   <Button variant="outline">
