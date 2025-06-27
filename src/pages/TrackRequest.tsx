@@ -1,4 +1,3 @@
-
 import DashboardLayout from "@/components/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,11 +7,14 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Search, Download, Star, Clock, CheckCircle, XCircle, Package, User, Calendar, FileText, Phone, Mail } from "lucide-react";
 import { useState } from "react";
+import TrackRequestSuccess from "@/components/TrackRequestSuccess";
 
 const TrackRequest = () => {
   const [trackingNumber, setTrackingNumber] = useState("");
   const [searchResults, setSearchResults] = useState<any>(null);
   const [feedback, setFeedback] = useState(0);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [submittedTrackingNumber, setSubmittedTrackingNumber] = useState("");
 
   // Mock data for tracking results
   const mockRequests = {
@@ -75,8 +77,22 @@ const TrackRequest = () => {
   };
 
   const handleSearch = () => {
+    if (!trackingNumber.trim()) {
+      // Show success page with a mock tracking number
+      const mockTrackingNumber = `TRK-2025-${String(Math.floor(Math.random() * 9999)).padStart(4, '0')}`;
+      setSubmittedTrackingNumber(mockTrackingNumber);
+      setShowSuccess(true);
+      return;
+    }
+
     const result = mockRequests[trackingNumber as keyof typeof mockRequests];
     setSearchResults(result || "not_found");
+  };
+
+  const handleBackToTrack = () => {
+    setShowSuccess(false);
+    setTrackingNumber("");
+    setSearchResults(null);
   };
 
   const getStatusColor = (status: string) => {
@@ -96,6 +112,23 @@ const TrackRequest = () => {
     if (status === "rejected") return <XCircle className="h-5 w-5 text-red-600" />;
     return <div className="h-5 w-5 rounded-full border-2 border-gray-300" />;
   };
+
+  if (showSuccess) {
+    return (
+      <DashboardLayout userType="citizen">
+        <div className="space-y-6">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Track Document Request</h1>
+            <p className="text-gray-600">Your request has been successfully submitted</p>
+          </div>
+          <TrackRequestSuccess 
+            onBack={handleBackToTrack}
+            trackingNumber={submittedTrackingNumber}
+          />
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout userType="citizen">
