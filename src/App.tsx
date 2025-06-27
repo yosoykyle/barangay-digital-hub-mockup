@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import CitizenDashboard from "./pages/CitizenDashboard";
 import RequestDocument from "./pages/RequestDocument";
+import TrackRequest from "./pages/TrackRequest";
 import FileComplaint from "./pages/FileComplaint";
 import ScheduleService from "./pages/ScheduleService";
 import ContactDirectory from "./pages/ContactDirectory";
@@ -34,6 +35,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/citizen/dashboard" element={<CitizenDashboard />} />
           <Route path="/citizen/request-document" element={<RequestDocument />} />
+          <Route path="/citizen/track-request" element={<TrackRequest />} />
           <Route path="/citizen/file-complaint" element={<FileComplaint />} />
           <Route path="/citizen/schedule-service" element={<ScheduleService />} />
           <Route path="/citizen/contact-directory" element={<ContactDirectory />} />

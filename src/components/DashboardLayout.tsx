@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Home, FileText, Calendar, Users, HelpCircle, Settings, BarChart3, UserCog, Menu, Bell, LogOut, Bot } from "lucide-react";
+import { Home, FileText, Calendar, Users, HelpCircle, Settings, BarChart3, UserCog, Menu, Bell, LogOut, Bot, Search } from "lucide-react";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -17,6 +17,7 @@ const DashboardLayout = ({ children, userType }: DashboardLayoutProps) => {
   const citizenMenuItems = [
     { icon: Home, label: "Dashboard", path: "/citizen/dashboard" },
     { icon: FileText, label: "Request Document", path: "/citizen/request-document" },
+    { icon: Search, label: "Track Request", path: "/citizen/track-request" },
     { icon: FileText, label: "File Complaint", path: "/citizen/file-complaint" },
     { icon: Calendar, label: "Book Service", path: "/citizen/schedule-service" },
     { icon: Users, label: "Directory", path: "/citizen/contact-directory" },
