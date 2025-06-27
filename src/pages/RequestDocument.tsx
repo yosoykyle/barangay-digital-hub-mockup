@@ -24,6 +24,15 @@ const RequestDocument = () => {
   const [feedback, setFeedback] = useState(0);
   const [showSuccess, setShowSuccess] = useState(false);
   const [submittedRequestNumber, setSubmittedRequestNumber] = useState("");
+  const [urgency, setUrgency] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [requirements, setRequirements] = useState("");
+  const [guardianName, setGuardianName] = useState("");
+  const [guardianRelationship, setGuardianRelationship] = useState("");
+  const [guardianDoc, setGuardianDoc] = useState(null);
+
+  // Helper to check if under 18
+  const isMinor = dob && ((new Date().getFullYear() - new Date(dob).getFullYear()) < 18);
 
   const documentTypes = [
     { value: "certificate", label: "Barangay Certificate", fee: "₱50", processing: "3-5 days" },
@@ -36,6 +45,37 @@ const RequestDocument = () => {
   const currentRequests = [
     { id: "BR-001", type: "Barangay Certificate", status: "Processing", submitted: "2024-06-20" },
     { id: "BR-002", type: "Clearance", status: "Ready for Pickup", submitted: "2024-06-18" }
+  ];
+
+  // Mock requirements per document
+  const requirementsOptions = {
+    certificate: ["Valid ID", "Proof of Residency"],
+    clearance: ["Cedula", "Valid ID"],
+    indigency: ["Barangay Certificate"],
+    residency: ["Proof of Residency"],
+    business: ["Business Permit Application", "Cedula"]
+  };
+
+  // Mock request history
+  const requestHistory = [
+    {
+      id: "BR-2025-001",
+      type: "Barangay Clearance",
+      status: "Under Review",
+      urgency: "High",
+      payment: "GCASH",
+      submitted: "2025-06-25",
+      tracking: ["Submitted", "Under Review"]
+    },
+    {
+      id: "BR-2025-002",
+      type: "Certificate of Indigency",
+      status: "Completed",
+      urgency: "Normal",
+      payment: "Cash",
+      submitted: "2025-06-20",
+      tracking: ["Submitted", "Under Review", "Approved", "Processing", "Ready", "Completed"]
+    }
   ];
 
   const selectedDocumentInfo = documentTypes.find(doc => doc.value === selectedDocument);
@@ -97,6 +137,33 @@ const RequestDocument = () => {
                 <CardDescription>Fill out the form to request official documents</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
+                {/* Type of Request Dropdown */}
+                <div className="space-y-2">
+                  <Label htmlFor="doc-type">Type of Request</Label>
+                  <Select value={selectedDocument} onValueChange={v => { setSelectedDocument(v); setRequirements(""); }}>
+                    <SelectTrigger><SelectValue placeholder="Select document type" /></SelectTrigger>
+                    <SelectContent>
+                      {documentTypes.map(doc => (
+                        <SelectItem key={doc.value} value={doc.value}>{doc.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                {/* Requirements Dropdown */}
+                {selectedDocument && (
+                  <div className="space-y-2">
+                    <Label htmlFor="requirements">Type of Requirements</Label>
+                    <Select value={requirements} onValueChange={setRequirements}>
+                      <SelectTrigger><SelectValue placeholder="Select requirement" /></SelectTrigger>
+                      <SelectContent>
+                        {(requirementsOptions[selectedDocument] || []).map(req => (
+                          <SelectItem key={req} value={req}>{req}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
                 {/* Personal Info Fields */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -148,12 +215,56 @@ const RequestDocument = () => {
                   </div>
                 )}
 
+                {/* Guardian Fields if minor */}
+                {isMinor && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-yellow-50 p-4 rounded">
+                    <div className="space-y-2">
+                      <Label htmlFor="guardian-name">Guardian Name</Label>
+                      <Input id="guardian-name" value={guardianName} onChange={e => setGuardianName(e.target.value)} placeholder="Enter guardian's name" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="guardian-relationship">Relationship</Label>
+                      <Input id="guardian-relationship" value={guardianRelationship} onChange={e => setGuardianRelationship(e.target.value)} placeholder="Relationship" />
+                    </div>
+                    <div className="space-y-2 col-span-2">
+                      <Label>Guardian Documents</Label>
+                      <Input type="file" onChange={e => setGuardianDoc(e.target.files?.[0] || null)} />
+                    </div>
+                  </div>
+                )}
+
                 {/* Purpose of Request (Textarea) */}
                 <div className="space-y-2">
                   <Label htmlFor="purpose">Purpose of Request</Label>
                   <Textarea id="purpose" value={purpose} onChange={e => setPurpose(e.target.value)} placeholder="State your purpose..." className="min-h-[80px]" />
                 </div>
 
+                {/* Urgency Dropdown */}
+                <div className="space-y-2">
+                  <Label htmlFor="urgency">Urgency/Priority</Label>
+                  <Select value={urgency} onValueChange={setUrgency}>
+                    <SelectTrigger><SelectValue placeholder="Select urgency" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="High">High</SelectItem>
+                      <SelectItem value="Normal">Normal</SelectItem>
+                      <SelectItem value="Low">Low</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Payment Method Selector */}
+                <div className="space-y-2">
+                  <Label htmlFor="payment">Payment Method</Label>
+                  <Select value={paymentMethod} onValueChange={setPaymentMethod}>
+                    <SelectTrigger><SelectValue placeholder="Select payment method" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Cash">Cash</SelectItem>
+                      <SelectItem value="GCASH">GCASH</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Additional Information */}
                 <div className="space-y-2">
                   <Label htmlFor="additional-info">Additional Information</Label>
                   <Textarea 
@@ -268,6 +379,39 @@ const RequestDocument = () => {
                     </div>
                   </div>
                 ))}
+              </CardContent>
+            </Card>
+
+            {/* Request History Table */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Request History</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="py-2 text-left">ID</th>
+                      <th className="py-2 text-left">Type</th>
+                      <th className="py-2 text-left">Status</th>
+                      <th className="py-2 text-left">Urgency</th>
+                      <th className="py-2 text-left">Payment</th>
+                      <th className="py-2 text-left">Submitted</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {requestHistory.map(req => (
+                      <tr key={req.id} className="border-b">
+                        <td className="py-1">{req.id}</td>
+                        <td>{req.type}</td>
+                        <td>{req.status}</td>
+                        <td>{req.urgency}</td>
+                        <td>{req.payment}</td>
+                        <td>{req.submitted}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </CardContent>
             </Card>
           </div>
