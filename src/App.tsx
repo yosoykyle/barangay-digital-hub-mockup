@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -11,6 +12,7 @@ import ScheduleService from "./pages/ScheduleService";
 import ContactDirectory from "./pages/ContactDirectory";
 import HelpSupport from "./pages/HelpSupport";
 import CitizenSettings from "./pages/CitizenSettings";
+import ChatBot from "./pages/ChatBot";
 import AdminDashboard from "./pages/AdminDashboard";
 import ManageUsers from "./pages/ManageUsers";
 import Analytics from "./pages/Analytics";
@@ -37,6 +39,7 @@ const App = () => (
           <Route path="/citizen/contact-directory" element={<ContactDirectory />} />
           <Route path="/citizen/help-support" element={<HelpSupport />} />
           <Route path="/citizen/settings" element={<CitizenSettings />} />
+          <Route path="/citizen/chatbot" element={<ChatBot />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/manage-users" element={<ManageUsers />} />
           <Route path="/admin/analytics" element={<Analytics />} />

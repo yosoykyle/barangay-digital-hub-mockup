@@ -2,7 +2,7 @@ import DashboardLayout from "@/components/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { FileText, Calendar, Users, Bell, Clock, CheckCircle, AlertCircle, Settings, HelpCircle } from "lucide-react";
+import { FileText, Calendar, Users, Bell, Clock, CheckCircle, AlertCircle, Settings, HelpCircle, Bot } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const CitizenDashboard = () => {
@@ -34,6 +34,14 @@ const CitizenDashboard = () => {
       stats: "50+ contacts"
     },
     {
+      title: "AI Assistant",
+      description: "Get instant help and answers",
+      icon: Bot,
+      path: "/citizen/chatbot",
+      color: "bg-indigo-600",
+      stats: "24/7 chatbot"
+    },
+    {
       title: "File Complaint",
       description: "Report issues or concerns",
       icon: AlertCircle,
@@ -46,16 +54,8 @@ const CitizenDashboard = () => {
       description: "Get assistance and guides",
       icon: HelpCircle,
       path: "/citizen/help-support",
-      color: "bg-indigo-600",
-      stats: "24/7 support"
-    },
-    {
-      title: "Settings",
-      description: "Manage your account",
-      icon: Settings,
-      path: "/citizen/settings",
-      color: "bg-gray-600",
-      stats: "Profile & preferences"
+      color: "bg-red-600",
+      stats: "Live support"
     }
   ];
 
