@@ -31,8 +31,8 @@ const DashboardLayout = ({ children, userType }: DashboardLayoutProps) => {
   ];
 
   // Check if user is super admin based on email
-  const isSuperAdmin = mockUserEmail.toLowerCase().includes('super_admin') || 
-                       mockUserEmail.toLowerCase().includes('superadmin');
+  const email = mockUserEmail.toLowerCase();
+  const isSuperAdmin = email.includes('super') && email.includes('admin');
 
   const baseAdminMenuItems = [
     { icon: Home, label: "Dashboard", path: "/admin/dashboard" },
