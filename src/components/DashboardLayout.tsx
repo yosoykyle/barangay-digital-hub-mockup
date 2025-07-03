@@ -14,6 +14,9 @@ const DashboardLayout = ({ children, userType }: DashboardLayoutProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  
+  // Mock user email - in real app this would come from auth context
+  const mockUserEmail = "superadmin@bgy.gov"; // Change to "admin@bgy.gov" to test hiding
 
   const citizenMenuItems = [
     { icon: Home, label: "Dashboard", path: "/citizen/dashboard" },
@@ -27,9 +30,12 @@ const DashboardLayout = ({ children, userType }: DashboardLayoutProps) => {
     { icon: Settings, label: "Settings", path: "/citizen/settings" },
   ];
 
-  const adminMenuItems = [
+  // Check if user is super admin based on email
+  const isSuperAdmin = mockUserEmail.toLowerCase().includes('super_admin') || 
+                       mockUserEmail.toLowerCase().includes('superadmin');
+
+  const baseAdminMenuItems = [
     { icon: Home, label: "Dashboard", path: "/admin/dashboard" },
-    { icon: UserCog, label: "Manage Users", path: "/admin/manage-users" },
     { icon: CheckSquare, label: "Approvals", path: "/admin/approvals" },
     { icon: Megaphone, label: "Announcements", path: "/admin/announcements" },
     { icon: BarChart3, label: "Analytics", path: "/admin/analytics" },
@@ -37,6 +43,15 @@ const DashboardLayout = ({ children, userType }: DashboardLayoutProps) => {
     { icon: HelpCircle, label: "Support Tickets", path: "/admin/support-tickets" },
     { icon: Settings, label: "Settings", path: "/admin/settings" },
   ];
+
+  // Add Manage Users only for super admins
+  const adminMenuItems = isSuperAdmin 
+    ? [
+        baseAdminMenuItems[0], // Dashboard
+        { icon: UserCog, label: "Manage Users", path: "/admin/manage-users" },
+        ...baseAdminMenuItems.slice(1) // Rest of the items
+      ]
+    : baseAdminMenuItems;
 
   const menuItems = userType === "citizen" ? citizenMenuItems : adminMenuItems;
 
